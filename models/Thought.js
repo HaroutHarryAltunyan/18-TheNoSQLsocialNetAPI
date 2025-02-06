@@ -1,68 +1,79 @@
 const mongoose = require("mongoose");
-// Destructure Schema from mongoose
-const { Schema } = mongoose;
+const { Schema, Types } = mongoose;
 
-// Reaction schema
-const reactionSchema = new mongoose.Schema(
+/**
+ * Schema for Reactions
+ */
+const reactionSchema = new Schema(
   {
     reactionId: {
       type: Schema.Types.ObjectId,
-      default: () => new mongoose.Types.ObjectId(),
+      default: () => new Types.ObjectId(), // Generates a new ObjectId by default
     },
     reactionBody: {
       type: String,
-      required: true,
-      maxlength: 280,
+      required: [true, "Reaction text is required"],
+      maxlength: [280, "Reaction must be 280 characters or less"],
     },
     username: {
       type: String,
-      required: true,
+      required: [true, "Username is required"],
     },
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (timestamp) => timestamp.toISOString(),
+      get: (timestamp) => new Date(timestamp).toLocaleString(), // Formats date for better readability
     },
   },
   {
     toJSON: {
-      // Applies the getter method for timestamp
-      getters: true,
+      getters: true, // Enables the getter method for timestamps
     },
+    _id: false, // Disables automatic creation of _id for reactions
   }
 );
 
-const thoughtSchema = new mongoose.Schema(
+/**
+ * Schema for Thoughts
+ */
+const thoughtSchema = new Schema(
   {
     thoughtText: {
       type: String,
-      required: true,
-      minlength: 1,
-      maxlength: 280,
+      required: [true, "Thought text is required"],
+      minlength: [1, "Thought must be at least 1 character long"],
+      maxlength: [280, "Thought must be 280 characters or less"],
     },
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (timestamp) => timestamp.toISOString(),
+      get: (timestamp) => new Date(timestamp).toLocaleString(),
     },
     username: {
       type: String,
-      required: true,
+      required: [true, "Username is required"],
     },
-    reactions: [reactionSchema],
+    reactions: [reactionSchema], // Embeds the reaction schema as an array
   },
   {
     toJSON: {
-      virtuals: true,
-      getters: true,
+      virtuals: true, // Enables virtual fields
+      getters: true, // Applies getter functions
     },
+    id: false, // Removes default '_id' field when returning JSON
   }
 );
 
-// Virtual to get reaction count
+/**
+ * Virtual field for reaction count
+ */
 thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
+/**
+ * Compiles Thought model
+ */
 const Thought = mongoose.model("Thought", thoughtSchema);
+
 module.exports = Thought;

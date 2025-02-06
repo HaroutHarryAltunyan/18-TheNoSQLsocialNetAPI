@@ -1,111 +1,164 @@
-// Imports required models
 const express = require("express");
 const Thought = require("../../models/Thought");
 const User = require("../../models/User");
-// Creating new router instance
+
 const router = express.Router();
 
-// GET all thoughts
+/**
+ * @route   GET /api/thoughts
+ * @desc    Get all thoughts
+ */
 router.get("/", async (req, res) => {
   try {
-    const thoughts = await Thought.find();
-    res.json(thoughts);
+    const thoughts = await Thought.find().populate("reactions");
+    res.status(200).json(thoughts);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error fetching thoughts:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// GET a single thought by _id
+/**
+ * @route   GET /api/thoughts/:id
+ * @desc    Get a single thought by ID
+ */
 router.get("/:id", async (req, res) => {
   try {
-    const thought = await Thought.findById(req.params.id);
+    const thought = await Thought.findById(req.params.id).populate("reactions");
+
     if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
+      return res.status(404).json({ error: "Thought not found" });
     }
-    res.json(thought);
+
+    res.status(200).json(thought);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error fetching thought:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// POST to create new thought connected with a user
+/**
+ * @route   POST /api/thoughts
+ * @desc    Create a new thought and associate it with a user
+ */
 router.post("/", async (req, res) => {
+  const { thoughtText, userId } = req.body;
+
+  if (!thoughtText || !userId) {
+    return res.status(400).json({ error: "Both thoughtText and userId are required" });
+  }
+
   try {
-    const newThought = await Thought.create(req.body);
-    await User.findByIdAndUpdate(req.body.userId, {
-      // Adds the new thought ID to the user's thoughts
-      $push: { thoughts: newThought._id },
-    });
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const newThought = await Thought.create({ thoughtText, username: user.username });
+
+    // Adds the thought to the user's list
+    user.thoughts.push(newThought._id);
+    await user.save();
+
     res.status(201).json(newThought);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error creating thought:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// PUT to update a thought by _id
+/**
+ * @route   PUT /api/thoughts/:id
+ * @desc    Update a thought by ID
+ */
 router.put("/:id", async (req, res) => {
   try {
-    const updatedThought = await Thought.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    // update the thought data
+    const updatedThought = await Thought.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true, // Ensures validation rules apply
+    });
+
     if (!updatedThought) {
-      return res.status(404).json({ message: "Thought not found" });
+      return res.status(404).json({ error: "Thought not found" });
     }
-    res.json(updatedThought);
+
+    res.status(200).json(updatedThought);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error updating thought:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// DELETE thought by ID
+/**
+ * @route   DELETE /api/thoughts/:id
+ * @desc    Delete a thought by ID
+ */
 router.delete("/:id", async (req, res) => {
   try {
     const deletedThought = await Thought.findByIdAndDelete(req.params.id);
+
     if (!deletedThought) {
-      return res.status(404).json({ message: "Thought not found" });
+      return res.status(404).json({ error: "Thought not found" });
     }
-    res.json({ message: "Thought deleted" });
+
+    res.status(200).json({ message: "Thought successfully deleted" });
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error deleting thought:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// REACTION ROUTE
-
-// POST to create a reaction to a thought
+/**
+ * @route   POST /api/thoughts/:thoughtId/reactions
+ * @desc    Add a reaction to a thought
+ */
 router.post("/:thoughtId/reactions", async (req, res) => {
   try {
-    const thought = await Thought.findById(req.params.thoughtId);
-    if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
+    const { reactionBody, username } = req.body;
+    
+    if (!reactionBody || !username) {
+      return res.status(400).json({ error: "Both reactionBody and username are required" });
     }
-    // Adds new reaction
-    thought.reactions.push(req.body); 
-    await thought.save();
+
+    const thought = await Thought.findByIdAndUpdate(
+      req.params.thoughtId,
+      { $addToSet: { reactions: req.body } },
+      { new: true }
+    );
+
+    if (!thought) {
+      return res.status(404).json({ error: "Thought not found" });
+    }
+
     res.status(201).json(thought);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error adding reaction:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// DELETE to remove a reaction from a thought
+/**
+ * @route   DELETE /api/thoughts/:thoughtId/reactions/:reactionId
+ * @desc    Remove a reaction from a thought
+ */
 router.delete("/:thoughtId/reactions/:reactionId", async (req, res) => {
   try {
     const thought = await Thought.findById(req.params.thoughtId);
+
     if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
+      return res.status(404).json({ error: "Thought not found" });
     }
+
     thought.reactions = thought.reactions.filter(
-      (reaction) => !reaction.reactionId.equals(req.params.reactionId)
+      (reaction) => reaction._id.toString() !== req.params.reactionId
     );
-    // Remove reaction by reaction ID
+
     await thought.save();
-    res.json(thought);
+
+    res.status(200).json({ message: "Reaction removed successfully", thought });
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error removing reaction:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

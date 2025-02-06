@@ -1,27 +1,27 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const User = require("./models/User");
 const Thought = require("./models/Thought");
 
-mongoose
-  .connect("mongodb://localhost/socialNetworkDB")
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => console.log("Error connecting to MongoDB: ", err));
+// Load environment variables
+dotenv.config();
 
+const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/socialNetworkDB";
+
+// Connect to MongoDB
+mongoose
+  .connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// Sample user data
 const userData = [
-  {
-    username: "Alex_Rider",
-    email: "alex.rider@email.com",
-  },
-  {
-    username: "Emma_Stone",
-    email: "emma.stone@email.com",
-  },
-  {
-    username: "Liam_Walker",
-    email: "liam.walker@email.com",
-  },
+  { username: "Alex_Rider", email: "alex.rider@email.com" },
+  { username: "Emma_Stone", email: "emma.stone@email.com" },
+  { username: "Liam_Walker", email: "liam.walker@email.com" },
 ];
 
+// Sample thoughts with reactions
 const thoughtData = [
   {
     thoughtText: "Just completed my first full-stack project! Feeling accomplished! 🚀",
@@ -40,33 +40,42 @@ const thoughtData = [
   },
 ];
 
+// Function to seed the database
 const seedDatabase = async () => {
   try {
-    // Clears existing data
+    console.log("🗑️ Clearing existing database...");
     await User.deleteMany({});
     await Thought.deleteMany({});
-    console.log("Database cleared");
+    console.log("✅ Database cleared.");
 
-    // Create users
-    const createdUsers = await User.create(userData);
-    console.log(`Created ${createdUsers.length} users`);
+    console.log("👤 Creating users...");
+    const createdUsers = await User.insertMany(userData);
+    console.log(`✅ ${createdUsers.length} users created.`);
 
-    // Creates thoughts and associates with users
-    for (const thought of thoughtData) {
-      const user = await User.findOne({ username: thought.username });
-      if (user) {
-        const newThought = await Thought.create(thought);
-        user.thoughts.push(newThought._id);
-        await user.save();
-      }
-    }
+    console.log("💭 Creating thoughts...");
+    const thoughtsWithUsers = await Promise.all(
+      thoughtData.map(async (thought) => {
+        const user = await User.findOne({ username: thought.username });
+        if (user) {
+          const newThought = await Thought.create(thought);
+          user.thoughts.push(newThought._id);
+          await user.save();
+          return newThought;
+        }
+        return null;
+      })
+    );
 
-    console.log("Seeded database successfully");
+    console.log(`✅ ${thoughtsWithUsers.filter(Boolean).length} thoughts added.`);
+
+    console.log("🎉 Database successfully seeded!");
   } catch (err) {
-    console.error("Error with seeding:", err);
+    console.error("❌ Seeding error:", err);
   } finally {
+    console.log("🔌 Closing MongoDB connection...");
     mongoose.connection.close();
   }
 };
 
+// Run the seeder
 seedDatabase();
