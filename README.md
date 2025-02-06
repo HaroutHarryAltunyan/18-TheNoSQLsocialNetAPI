@@ -1,237 +1,188 @@
-# 🚀 NoSQL Social Network API
+# **📌 Social Network API**
 
-## 📌 Description
-This **NoSQL Social Network API** is built using **MongoDB**, **Express.js**, and **Mongoose**. It allows users to **share thoughts, react to friends' thoughts, and create a friend list**. The API follows a **RESTful architecture** and is tested using **Insomnia/Postman**.
+## **🚀 Description**
+This is a **NoSQL-based API** for a social network web application where users can share their thoughts, react to friends' thoughts, and manage their friend list. The backend is built using **Node.js, Express, and MongoDB (Mongoose ODM)**.
 
-This project demonstrates how to work with **MongoDB (NoSQL databases)** and **Mongoose ORM**, implementing **CRUD operations** for users, thoughts, reactions, and friendships.
+https://drive.google.com/file/d/1umZNqH0R3PyEE7vlZtIgeNW_KSNvtBqj/view
 
----
-
-## 📸 Walkthrough Video
-🔗 **[Click here to watch the walkthrough video](YOUR_VIDEO_LINK_HERE)**  
-_(Replace with your actual video link)_
 
 ---
 
-## 🛠️ Technologies Used
+## **📖 Table of Contents**
+- [📌 Social Network API](#-social-network-api)
+- [🚀 Description](#-description)
+- [🛠️ Technologies Used](#️-technologies-used)
+- [📂 Folder Structure](#-folder-structure)
+- [🚀 Installation & Usage](#-installation--usage)
+- [📡 API Routes](#-api-routes)
+  - [📌 User Routes](#-user-routes)
+  - [💭 Thought Routes](#-thought-routes)
+  - [💬 Reaction Routes](#-reaction-routes)
+  - [👥 Friend Routes](#-friend-routes)
+- [📌 Example JSON Responses](#-example-json-responses)
+- [📝 License](#-license)
+
+---
+
+## **🛠️ Technologies Used**
 - **Node.js** - Backend runtime
-- **Express.js** - Web framework for handling routes
-- **MongoDB** - NoSQL database for storing user and thought data
-- **Mongoose** - ODM for MongoDB to manage schema
-- **Insomnia/Postman** - API testing tool
-- **Cors & Morgan** - Middleware for security and logging
+- **Express.js** - API routing framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB ODM
+- **dotenv** - Environment variable management
+- **nodemon** - Auto-restart development server
 
 ---
 
-## 🚀 Installation
+## **📂 Folder Structure**
+📦 Social_Network_API
+┣ 📂 config
+┃ ┗ 📜 connection.js        # MongoDB connection setup
+┣ 📂 models
+┃ ┣ 📜 Thought.js           # Thought schema
+┃ ┣ 📜 User.js              # User schema
+┣ 📂 routes
+┃ ┣ 📂 api
+┃ ┃ ┣ 📜 userRoutes.js      # User routes
+┃ ┃ ┣ 📜 thoughtRoutes.js   # Thought routes
+┃ ┃ ┗ 📜 index.js           # API routes index
+┃ ┗ 📜 index.js             # Main route handler
+┣ 📂 utils
+┃ ┗ 📜 seed.js              # Script to seed database with sample data
+┣ 📜 .gitignore
+┣ 📜 package.json
+┣ 📜 README.md              # You’re reading this file
+┣ 📜 server.js              # Main entry point
+
+---
+
+## **🚀 Installation & Usage**
+### **🔧 Prerequisites**
+Ensure you have **Node.js** and **MongoDB** installed.
 
 ### **1️⃣ Clone the Repository**
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/nosql-social-network-api.git
-cd nosql-social-network-api
-```
+git clone https://github.com/yourusername/social-network-api.git
+cd social-network-api
 
-### **2️⃣ Install Dependencies**
-```bash
+2️⃣ Install Dependencies
 npm install
-```
 
-### **3️⃣ Set Up Environment Variables**
-Create a **`.env`** file in the root directory and add:
-```
+3️⃣ Setup Environment Variables
+Create a .env file in the root directory:
 MONGO_URI=mongodb://127.0.0.1:27017/socialNetworkDB
-```
+PORT=3001
 
-### **4️⃣ Start the MongoDB Server**
-Make sure **MongoDB** is running locally:
-```bash
-mongod
-```
+4️⃣ Seed the Database (Optional)
+If you want sample users and thoughts:
+node utils/seed.js
 
-### **5️⃣ Start the API Server**
-```bash
+5️⃣ Start the Server
 npm start
-```
-or use:
-```bash
-npm run dev
-```
-_(If using nodemon for live server reloads)_
 
----
+📡 API Routes
+📌 User Routes
+Method	Endpoint	Description
+GET	/api/users	Get all users
+GET	/api/users/:id	Get a single user by ID
+POST	/api/users	Create a new user
+PUT	/api/users/:id	Update a user by ID
+DELETE	/api/users/:id	Delete a user and their thoughts
 
-## 📌 API Routes Documentation
+💭 Thought Routes
+Method	Endpoint	Description
+GET	/api/thoughts	Get all thoughts
+GET	/api/thoughts/:id	Get a single thought by ID
+POST	/api/thoughts	Create a new thought
+PUT	/api/thoughts/:id	Update a thought by ID
+DELETE	/api/thoughts/:id	Delete a thought
 
-### **📌 User Routes**
-#### **🔹 Get All Users**
-```http
-GET /api/users
-```
-#### **🔹 Get a Single User (by ID)**
-```http
-GET /api/users/:id
-```
-#### **🔹 Create a New User**
-```http
+💬 Reaction Routes
+Method	Endpoint	Description
+POST	/api/thoughts/:thoughtId/reactions	Add a reaction to a thought
+DELETE	/api/thoughts/:thoughtId/reactions/:reactionId	Remove a reaction
+
+👥 Friend Routes
+Method	Endpoint	Description
+POST	/api/users/:userId/friends/:friendId	Add a friend to a user’s friend list
+DELETE	/api/users/:userId/friends/:friendId	Remove a friend from the 
+
+📌 Example JSON Responses
+
+✅ Create a User
+
 POST /api/users
-```
-📌 **Example JSON Body**
-```json
 {
-  "username": "johndoe",
-  "email": "johndoe@example.com"
+  "username": "John_Doe",
+  "email": "john.doe@email.com"
 }
-```
-#### **🔹 Update User (by ID)**
-```http
-PUT /api/users/:id
-```
-#### **🔹 Delete a User (by ID)**
-```http
-DELETE /api/users/:id
-```
-🛠 **Bonus**: Deleting a user also deletes associated thoughts.
 
----
+Response
+{
+  "_id": "67a5432334e2a98d8bb39ea8",
+  "username": "John_Doe",
+  "email": "john.doe@email.com",
+  "thoughts": [],
+  "friends": [],
+  "__v": 0
+}
 
-### **📌 Thought Routes**
-#### **🔹 Get All Thoughts**
-```http
+💭 Get All Thoughts
 GET /api/thoughts
-```
-#### **🔹 Get a Single Thought (by ID)**
-```http
-GET /api/thoughts/:thoughtId
-```
-#### **🔹 Create a Thought**
-```http
-POST /api/thoughts
-```
-📌 **Example JSON Body**
-```json
+[
+  {
+    "_id": "67a542b7e71527cb75c10442",
+    "thoughtText": "Just completed my first full-stack project! Feeling accomplished! 🚀",
+    "username": "Alex_Rider",
+    "reactions": [
+      {
+        "reactionBody": "That's fantastic! Keep going! 🎉",
+        "username": "Liam_Walker",
+        "reactionId": "67a542b7e71527cb75c10443",
+        "createdAt": "2/6/2025, 3:16:07 PM"
+      }
+    ],
+    "createdAt": "2/6/2025, 3:16:07 PM",
+    "__v": 0,
+    "reactionCount": 1
+  }
+]
+
+💬 Add a Reaction to a Thought
+POST /api/thoughts/67a542b7e71527cb75c10442/reactions
 {
-  "thoughtText": "This is my first thought!",
-  "username": "johndoe",
-  "userId": "replace-with-actual-user-id"
+  "reactionBody": "This is amazing!",
+  "username": "John_Doe"
 }
-```
-#### **🔹 Update a Thought**
-```http
-PUT /api/thoughts/:thoughtId
-```
-#### **🔹 Delete a Thought**
-```http
-DELETE /api/thoughts/:thoughtId
-```
 
----
-
-### **📌 Friend Routes**
-#### **🔹 Add a Friend**
-```http
-POST /api/users/:userId/friends/:friendId
-```
-#### **🔹 Remove a Friend**
-```http
-DELETE /api/users/:userId/friends/:friendId
-```
-
----
-
-### **📌 Reaction Routes**
-#### **🔹 Add a Reaction to a Thought**
-```http
-POST /api/thoughts/:thoughtId/reactions
-```
-📌 **Example JSON Body**
-```json
+👥 Add a Friend
+POST /api/users/67a542b7e71527cb75c1043a/friends/67a5432334e2a98d8bb39ea8
+Response:
 {
-  "reactionBody": "Great thought!",
-  "username": "janedoe"
+  "user": {
+    "_id": "67a542b7e71527cb75c1043a",
+    "username": "Alex_Rider",
+    "friends": [
+      {
+        "_id": "67a5432334e2a98d8bb39ea8",
+        "username": "John_Doe"
+      }
+    ]
+  },
+  "newFriend": {
+    "username": "John_Doe",
+    "friendId": "67a5432334e2a98d8bb39ea8"
+  }
 }
-```
-#### **🔹 Remove a Reaction**
-```http
-DELETE /api/thoughts/:thoughtId/reactions/:reactionId
-```
 
----
+📝 License
+This project is licensed under the MIT License.
 
-## 🎥 Walkthrough Video (Required)
-To complete the project, **record a walkthrough video** demonstrating:
-✅ **Starting the server** (`npm start`)  
-✅ **Testing all GET, POST, PUT, DELETE routes using Insomnia/Postman**  
-✅ **Creating, updating, deleting users and thoughts**  
-✅ **Adding and removing friends**  
-✅ **Adding and deleting reactions**  
+🚀 Author
+Developed by Harout Altunyan
+🎯 Bootcamp Project | February 2025
 
-**Upload the video** and place the **link in the "Walkthrough Video" section** above.
-
----
-
-## 📂 File Structure
-```
-📦 NoSQL-Social-Network-API
- ┣ 📂 config
- ┃ ┗ 📜 connection.js
- ┣ 📂 controllers
- ┃ ┣ 📜 thoughtController.js
- ┃ ┗ 📜 userController.js
- ┣ 📂 models
- ┃ ┣ 📜 Thought.js
- ┃ ┣ 📜 User.js
- ┃ ┗ 📜 Reaction.js
- ┣ 📂 routes
- ┃ ┣ 📜 thoughtRoutes.js
- ┃ ┗ 📜 userRoutes.js
- ┣ 📂 utils
- ┃ ┗ 📜 formatDate.js
- ┣ 📜 .gitignore
- ┣ 📜 package.json
- ┣ 📜 server.js
- ┗ 📜 README.md
-```
-
----
-
-## 🏆 Bonus Features
-- ✅ **Cascade Delete**: When a user is deleted, their thoughts are also deleted.
-- ✅ **Formatted Timestamps**: Dates are formatted using a helper function.
-- ✅ **Uses Mongoose Virtuals**: `friendCount` and `reactionCount` are dynamically calculated.
-
----
-
-## 🎯 Future Enhancements
-- 🔹 **Authentication (JWT)**
-- 🔹 **Front-End Integration**
-- 🔹 **Pagination for Large Databases**
-
----
-
-## 🛠️ Troubleshooting
-### **MongoDB Not Running?**
-Check if MongoDB is running:
-```bash
-mongod
-```
-If not installed, follow [this guide](https://coding-boot-camp.github.io/full-stack/mongodb/how-to-install-mongodb).
-
-### **Port Conflict?**
-If `3001` is in use, change it in `server.js`:
-```javascript
-const PORT = process.env.PORT || 5000;
-```
-Then restart the server:
-```bash
-npm start
-```
-
----
-
-## 📜 License
-This project is **MIT licensed**.
-
----
-
-### 🎯 **🚀 Congratulations! Your Social Network API is Ready for Submission!** 🎯
-Let me know if you need **any last-minute help!** 😊🔥
+📌 Notes
+	•	This project is designed as a backend API only.
+	•	You can test routes using Insomnia or Postman.
+	•	Future plans: Implement frontend integration.
