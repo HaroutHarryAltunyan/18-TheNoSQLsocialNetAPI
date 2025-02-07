@@ -3,7 +3,18 @@
 ## **🚀 Description**
 This is a **NoSQL-based API** for a social network web application where users can share their thoughts, react to friends' thoughts, and manage their friend list. The backend is built using **Node.js, Express, and MongoDB (Mongoose ODM)**.
 
+## videos 
+
 https://drive.google.com/file/d/1umZNqH0R3PyEE7vlZtIgeNW_KSNvtBqj/view
+
+
+https://drive.google.com/file/d/1_WMTvXnHOFfSHe_QoM2eDimu-pCTRCa9/view
+
+
+https://drive.google.com/file/d/1CFWWgD6ix3WiPv-1HV9xtuuZkSOd-GN-/view
+
+
+https://drive.google.com/file/d/1fNg0PrTJBxLwaomZLcZf7-3uOwCsZWD5/view
 
 
 ---
