@@ -186,3 +186,15 @@ Developed by Harout Altunyan
 	•	This project is designed as a backend API only.
 	•	You can test routes using Insomnia or Postman.
 	•	Future plans: Implement frontend integration.
+
+  ![Description of Image](./Assets/images/Screenshot1.png)
+  ![Description of Image](./Assets/images/Screenshot3.png)
+  ![Description of Image](./Assets/images/Screenshot4.png)
+  ![Description of Image](./Assets/images/Screenshot5.png)
+  ![Description of Image](./Assets/images/Screenshot6.png)
+  ![Description of Image](./Assets/images/Screenshot7.png)
+  ![Description of Image](./Assets/images/Screenshot8.png)
+  ![Description of Image](./Assets/images/Screenshot9.png)
+  ![Description of Image](./Assets/images/Screenshot10.png)
+  ![Description of Image](./Assets/images/Screenshot11.png)
+  ![Description of Image](./Assets/images/Screenshot12.png)
