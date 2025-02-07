@@ -187,10 +187,10 @@ Developed by Harout Altunyan
 	•	You can test routes using Insomnia or Postman.
 	•	Future plans: Implement frontend integration.
 
-  ![Description of Image](./Assets/images/Screenshot1.png)
-  ![Description of Image](./Assets/images/Screenshot3.png)
-  ![Description of Image](./Assets/images/Screenshot4.png)
-  ![Description of Image](./Assets/images/Screenshot5.png)
+  ![1](./Assets/images/Screenshot1.jpg)
+  ![2](./Assets/images/Screenshot3.png)
+  ![3](./Assets/images/Screenshot4.png)
+  ![4](./Assets/images/Screenshot5.png)
   ![Description of Image](./Assets/images/Screenshot6.png)
   ![Description of Image](./Assets/images/Screenshot7.png)
   ![Description of Image](./Assets/images/Screenshot8.png)
